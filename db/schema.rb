@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2021_12_04_065303) do
   create_table "orders", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "order_list_id", null: false
+    t.integer "amount", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["order_list_id"], name: "index_orders_on_order_list_id"
@@ -40,7 +41,7 @@ ActiveRecord::Schema.define(version: 2021_12_04_065303) do
 
   create_table "promotion_actions", force: :cascade do |t|
     t.bigint "promotion_id", null: false
-    t.string "type"
+    t.string "action_type"
     t.jsonb "config"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -49,7 +50,7 @@ ActiveRecord::Schema.define(version: 2021_12_04_065303) do
 
   create_table "promotion_rules", force: :cascade do |t|
     t.bigint "promotion_id", null: false
-    t.string "type"
+    t.string "rule_type"
     t.jsonb "config"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

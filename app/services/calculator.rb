@@ -1,14 +1,13 @@
 class Calculator
-    def initialize(order_list_id, promotion_id)
-        @order_list_id = order_list_id
-        @promotion_id = promotion_id
+    def initialize(order_list, promotion)
+        @order_list = order_list
+        @promotion = promotion
     end
 
     def call
-        @order_list = OrderList.find_by(id: @order_list_id)
-        raise "order not found" if @order.nil?
-        @promotion = Promotion.find_by(id: @promotion_id)
+        raise "order_list not found" if @order_list.nil?
         raise "promotion not found" if @promotion.nil?
+
         @result = {
             subtotal: @order_list.subtotal,
             discount: 0,

@@ -11,6 +11,12 @@ class PromotionAction < ApplicationRecord
     extra_gift: ['product_id']
   }
 
+  def trigger(subtotal)
+    if self.action_type === 'fixed_discount'
+      return self.config['amount']
+    end
+  end
+
   private
   def config_must_be_valid
       required_columns = ACTION_CONFIG[self.action_type.to_sym]

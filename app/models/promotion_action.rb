@@ -17,7 +17,8 @@ class PromotionAction < ApplicationRecord
       self.config['amount']
     when 'percentage_discount'
       self.config['percentage'] * 0.01 * subtotal
-    else
+    when 'extra_gift'
+      send_extra_gift
       0
     end
   end
@@ -35,4 +36,10 @@ class PromotionAction < ApplicationRecord
         end
       end
   end
+
+  def send_extra_gift
+    # Extra logic can be put here in the future
+    # Currenly don't check if product_id exist
+  end
+  
 end

@@ -29,5 +29,15 @@ FactoryBot.define do
                 promotion.promotion_actions << FactoryBot.build(:promotion_action, :fixed_discount)
             end
         end
+
+        trait :over_1000_extra_gift do
+            code { 'over_1000_extra_gift' }
+            name { '滿千送輪胎' }
+
+            after(:create) do |promotion|
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :over_total)
+                promotion.promotion_actions << FactoryBot.build(:promotion_action, :extra_gift)
+            end
+        end
     end
 end

@@ -9,5 +9,10 @@ FactoryBot.define do
             action_type { 'percentage_discount' }
             config { { percentage: 3 } }
         end
+
+        trait :extra_gift do
+            action_type { 'extra_gift' }
+            config { { product_id: 999 } }
+        end
     end
 end

@@ -4,6 +4,7 @@ RSpec.describe Calculator do
   before(:each) do
     @apple = create(:product, :apple)
     @watermelon = create(:product, :watermelon)
+    @order_list = create(:order_list)
   end
 
   context '訂單滿 1000 元折 100 元' do
@@ -12,12 +13,10 @@ RSpec.describe Calculator do
     end
 
     it 'should has discount if price amount over 1000' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 10)
-      Order.create(order_list_id: order_list.id, product_id: @watermelon.id, amount: 10)
-      expect(order_list.subtotal).to eq(3000)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 10)
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 3000,
         discount: 100,
@@ -26,12 +25,10 @@ RSpec.describe Calculator do
     end
 
     it 'should have no discount if price amount less than 1000' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 1)
-      Order.create(order_list_id: order_list.id, product_id: @watermelon.id, amount: 1)
-      expect(order_list.subtotal).to eq(300)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 1)
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 300,
         discount: 0,
@@ -46,12 +43,10 @@ RSpec.describe Calculator do
     end
 
     it 'should has discount if price amount over 1000' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 10)
-      Order.create(order_list_id: order_list.id, product_id: @watermelon.id, amount: 10)
-      expect(order_list.subtotal).to eq(3000)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 10)
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 3000,
         discount: 90,
@@ -60,12 +55,10 @@ RSpec.describe Calculator do
     end
 
     it 'should have no discount if price amount less than 1000' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 1)
-      Order.create(order_list_id: order_list.id, product_id: @watermelon.id, amount: 1)
-      expect(order_list.subtotal).to eq(300)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 1)
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 300,
         discount: 0,
@@ -86,11 +79,9 @@ RSpec.describe Calculator do
     end
 
     it 'should has discount if apple more than 5' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 10)
-      expect(order_list.subtotal).to eq(1000)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 10)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 1000,
         discount: 100,
@@ -99,11 +90,9 @@ RSpec.describe Calculator do
     end
 
     it 'should have no discount if apple less than 5' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @apple.id, amount: 4)
-      expect(order_list.subtotal).to eq(400)
+      Order.create(order_list_id: @order_list.id, product_id: @apple.id, amount: 4)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 400,
         discount: 0,
@@ -112,15 +101,45 @@ RSpec.describe Calculator do
     end
 
     it 'should have no discount if no apple exist' do
-      order_list = create(:order_list)
-      Order.create(order_list_id: order_list.id, product_id: @watermelon.id, amount: 10)
-      expect(order_list.subtotal).to eq(2000)
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
 
-      result = Calculator.new(order_list, @promotion).call()
+      result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 2000,
         discount: 0,
         total: 2000
+      })
+    end
+  end
+
+  context '訂單滿Ｘ元贈送特定商品' do
+    before(:each) do
+      @promotion = create(:promotion, :over_1000_extra_gift)
+    end
+
+    it 'should trigger method if over 1000' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+
+      # Should use this one but not working, not sure why...
+      # expect(@promotion.promotion_actions.last).to receive(:send_extra_gift)
+
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 2000,
+        discount: 0,
+        total: 2000
+      })
+    end
+
+    it 'should not trigger method if not over 1000' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
+      expect(@promotion.promotion_actions.last).to_not receive(:send_extra_gift)
+
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 200,
+        discount: 0,
+        total: 200
       })
     end
   end

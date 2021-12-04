@@ -3,11 +3,11 @@ class PromotionRule < ApplicationRecord
 
   belongs_to :promotion
 
-  VALID_TYPE = ["over_total", "special_product_over_count", "max_usage_count", "max_discount_amount", "monthly_usage_count"]
+  VALID_TYPE = ["over_total", "special_product_over_amount", "max_usage_count", "max_discount_amount", "monthly_usage_count"]
 
   RULE_CONFIG = {
     over_total: ['amount'],
-    special_product_over_count: ['product_id', 'count'],
+    special_product_over_amount: ['product_id', 'amount'],
     max_usage_count: ['count'],
     max_discount_amount: ['amount'],
     monthly_usage_count: ['count']
@@ -17,6 +17,12 @@ class PromotionRule < ApplicationRecord
     case rule_type
     when 'over_total'
       return order_list.subtotal > self.config['amount']
+    when 'special_product_over_amount'
+      product_id = config['product_id']
+  
+      product = Product.find_by(id: product_id)
+      product_count = order_list.amount_for_product(product_id)
+      return product_count >= config['amount']
     end
   end
 

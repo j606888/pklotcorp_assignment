@@ -19,5 +19,15 @@ FactoryBot.define do
                 promotion.promotion_actions << FactoryBot.build(:promotion_action, :percentage_discount)
             end
         end
+
+        trait :buy_5_apple_send_100 do
+            code { 'buy_5_apple_send_100' }
+            name { '蘋果買五折100' }
+
+            after(:create) do |promotion|
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :special_product_over_amount)
+                promotion.promotion_actions << FactoryBot.build(:promotion_action, :fixed_discount)
+            end
+        end
     end
 end

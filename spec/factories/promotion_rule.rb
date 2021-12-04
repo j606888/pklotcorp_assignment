@@ -4,5 +4,10 @@ FactoryBot.define do
             rule_type { 'over_total' }
             config { { amount: 1000 } }
         end
+
+        trait :special_product_over_amount do
+            rule_type { 'special_product_over_amount' }
+            config { { amount: 5 } }
+        end
     end
 end

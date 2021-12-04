@@ -5,4 +5,14 @@ class OrderList < ApplicationRecord
   def subtotal
     orders.map(&:subtotal).sum
   end
+
+  def amount_for_product(product_id)
+    orders.each do |order|
+      next if order.product_id != product_id
+
+      return order.amount
+    end
+
+    0
+  end
 end

@@ -12,8 +12,13 @@ class PromotionAction < ApplicationRecord
   }
 
   def trigger(subtotal)
-    if self.action_type === 'fixed_discount'
-      return self.config['amount']
+    case self.action_type
+    when 'fixed_discount'
+      self.config['amount']
+    when 'percentage_discount'
+      self.config['percentage'] * 0.01 * subtotal
+    else
+      0
     end
   end
 

@@ -112,7 +112,7 @@ RSpec.describe Calculator do
     end
   end
 
-  context '訂單滿Ｘ元贈送特定商品' do
+  context '訂單滿千元贈送特定商品' do
     before(:each) do
       @promotion = create(:promotion, :over_1000_extra_gift)
     end
@@ -135,6 +135,48 @@ RSpec.describe Calculator do
       Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
       expect(@promotion.promotion_actions.last).to_not receive(:send_extra_gift)
 
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 200,
+        discount: 0,
+        total: 200
+      })
+    end
+  end
+
+  context '訂單滿千送百，折扣總共只能套用 3 次' do
+    before(:each) do
+      @promotion = create(:promotion, :over_1000_send_100_with_max_usage_3)
+    end
+
+    it 'should effect before 3 times' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+      3.times do
+        result = Calculator.new(@order_list, @promotion).call()
+        expect(result).to match({
+          subtotal: 2000,
+          discount: 100,
+          total: 1900
+        })
+      end
+    end
+
+    it 'should not effect after 3 times' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+      3.times do
+        Calculator.new(@order_list, @promotion).call()
+      end
+
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 2000,
+        discount: 0,
+        total: 2000
+      })
+    end
+
+    it 'should not effect if price not over 1000' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
       result = Calculator.new(@order_list, @promotion).call()
       expect(result).to match({
         subtotal: 200,

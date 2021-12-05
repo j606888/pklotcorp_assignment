@@ -9,5 +9,10 @@ FactoryBot.define do
             rule_type { 'special_product_over_amount' }
             config { { amount: 5 } }
         end
+
+        trait :max_usage_count do
+            rule_type { 'max_usage_count' }
+            config { { count: 3 }}
+        end
     end
 end

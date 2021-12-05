@@ -39,5 +39,16 @@ FactoryBot.define do
                 promotion.promotion_actions << FactoryBot.build(:promotion_action, :extra_gift)
             end
         end
+
+        trait :over_1000_send_100_with_max_usage_3 do
+            code { 'over_1000_send_100_with_max_usage_3' }
+            name { '滿千送百，折扣只能套用三次' }
+
+            after(:create) do |promotion|
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :over_total)
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :max_usage_count)
+                promotion.promotion_actions << FactoryBot.build(:promotion_action, :fixed_discount)
+            end
+        end
     end
 end

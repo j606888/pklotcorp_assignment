@@ -18,11 +18,14 @@ class PromotionRule < ApplicationRecord
     when 'over_total'
       return order_list.subtotal > self.config['amount']
     when 'special_product_over_amount'
-      product_id = config['product_id']
+      product_id = self.config['product_id']
   
       product = Product.find_by(id: product_id)
       product_count = order_list.amount_for_product(product_id)
       return product_count >= config['amount']
+    when 'max_usage_count'
+      usage = self.promotion.promotion_usages.count
+      return usage < self.config['count'] 
     end
   end
 

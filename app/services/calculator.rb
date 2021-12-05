@@ -16,6 +16,7 @@ class Calculator
 
         if is_promotion_usable?
             calculate_discount_and_action
+            pretend_user_purchase
         end
 
         return @result
@@ -38,5 +39,9 @@ class Calculator
 
         @result[:discount] += discount
         @result[:total] -= discount
+    end
+
+    def pretend_user_purchase
+        PromotionUsage.create(promotion_id: @promotion.id, user_id: @order_list.user_id)
     end
 end

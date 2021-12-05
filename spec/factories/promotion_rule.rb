@@ -1,5 +1,5 @@
 FactoryBot.define do
-    factory :promotion_rule, class: 'PromotionRule' do
+    factory :promotion_rule do
         trait :over_total do
             rule_type { 'over_total' }
             config { { amount: 1000 } }

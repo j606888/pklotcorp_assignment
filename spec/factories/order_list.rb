@@ -1,5 +1,5 @@
 FactoryBot.define do
-    factory :order_list, class: 'OrderList' do
+    factory :order_list do
         association :user
     end
 end

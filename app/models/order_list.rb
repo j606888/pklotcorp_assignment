@@ -3,7 +3,7 @@ class OrderList < ApplicationRecord
   has_many :orders
 
   def subtotal
-    orders.map(&:subtotal).sum
+    orders.sum(&:subtotal)
   end
 
   def amount_for_product(product_id)

@@ -188,7 +188,7 @@ RSpec.describe Calculator do
 
   context '訂單滿千折3％，折扣每人只能總共優惠300元' do
     before(:each) do
-      @promotion = create(:promotion, :over_1000_3_percent_off_with_max_discount_amount)
+      @promotion = create(:promotion, :over_1000_3_percent_off_with_max_300)
     end
 
     it 'should effect if discount less than 300' do
@@ -228,7 +228,7 @@ RSpec.describe Calculator do
 
   context '滿千送百，每個月折扣上限為300元' do
     before(:each) do
-      @promotion = create(:promotion, :over_1000_send_100_with_fixed_discount_with_monthly_max_amount)
+      @promotion = create(:promotion, :over_1000_send_100_with_monthly_max_300)
     end
 
     it 'should effect if discount less than 300' do

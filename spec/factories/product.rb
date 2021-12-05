@@ -1,5 +1,5 @@
 FactoryBot.define do
-    factory :product, class: 'Product' do
+    factory :product do
         trait :apple do
             name { "Apple" }
             price { 100 }

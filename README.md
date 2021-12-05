@@ -1,24 +1,11 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 名詞定義
 
-Things you may want to cover:
+* subtotal - 打折前金額
+* discount - 折扣
+* total - 折扣後金額
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* 金額 - amount
+* ％數 - percentage
+* 數量 - count

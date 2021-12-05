@@ -3,14 +3,10 @@ class PromotionRule < ApplicationRecord
 
   belongs_to :promotion
 
-  VALID_TYPE = ["over_total", "special_product_over_amount", "max_usage_count", "max_discount_amount", "monthly_usage_count"]
-
   RULE_CONFIG = {
     over_total: ['amount'],
     special_product_over_amount: ['product_id', 'amount'],
     max_usage_count: ['count'],
-    max_discount_amount: ['amount'],
-    monthly_usage_count: ['count']
   }
 
   def is_usable?(order_list)

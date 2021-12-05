@@ -50,5 +50,25 @@ FactoryBot.define do
                 promotion.promotion_actions << FactoryBot.build(:promotion_action, :fixed_discount)
             end
         end
+
+        trait :over_1000_3_percent_off_with_max_discount_amount do
+            code { 'over_1000_3_percent_off_with_max_discount_amount' }
+            name { '滿千折3％，折扣只能總共優惠300元' }
+
+            after(:create) do |promotion|
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :over_total)
+                promotion.promotion_actions << FactoryBot.build(:promotion_action, :percentage_with_max_discount_amount)
+            end
+        end
+
+        trait :over_1000_send_100_with_fixed_discount_with_monthly_max_amount do
+            code { 'over_1000_send_100_with_fixed_discount_with_monthly_max_amount' }
+            name { '滿千送百，每個月折扣上限為300元' }
+
+            after(:create) do |promotion|
+                promotion.promotion_rules << FactoryBot.build(:promotion_rule, :over_total)
+                promotion.promotion_actions << FactoryBot.build(:promotion_action, :fixed_discount_with_monthly_max_amount)
+            end
+        end
     end
 end

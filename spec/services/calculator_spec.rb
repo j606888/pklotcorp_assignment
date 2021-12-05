@@ -185,4 +185,86 @@ RSpec.describe Calculator do
       })
     end
   end
+
+  context '訂單滿千折3％，折扣每人只能總共優惠300元' do
+    before(:each) do
+      @promotion = create(:promotion, :over_1000_3_percent_off_with_max_discount_amount)
+    end
+
+    it 'should effect if discount less than 300' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 2000,
+        discount: 60,
+        total: 1940
+      })
+    end
+
+    it 'should have max discount for 300' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 100)
+      3.times do
+        Calculator.new(@order_list, @promotion).call()
+      end
+
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 20000,
+        discount: 300,
+        total: 19700
+      })
+    end
+
+    it 'should not effect if price not over 1000' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 200,
+        discount: 0,
+        total: 200
+      })
+    end
+  end
+
+  context '滿千送百，每個月折扣上限為300元' do
+    before(:each) do
+      @promotion = create(:promotion, :over_1000_send_100_with_fixed_discount_with_monthly_max_amount)
+    end
+
+    it 'should effect if discount less than 300' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+      3.times do
+        result = Calculator.new(@order_list, @promotion).call()
+        expect(result).to match({
+          subtotal: 2000,
+          discount: 100,
+          total: 1900
+        })
+      end
+    end
+
+    it 'should have max discount for 300' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 10)
+      3.times do
+        Calculator.new(@order_list, @promotion).call()
+      end
+
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 2000,
+        discount: 0,
+        total: 2000
+      })
+    end
+
+    it 'should not effect if price not over 1000' do
+      Order.create(order_list_id: @order_list.id, product_id: @watermelon.id, amount: 1)
+      result = Calculator.new(@order_list, @promotion).call()
+      expect(result).to match({
+        subtotal: 200,
+        discount: 0,
+        total: 200
+      })
+    end
+  end
 end

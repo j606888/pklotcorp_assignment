@@ -42,6 +42,6 @@ class Calculator
     end
 
     def pretend_user_purchase
-        PromotionUsage.create(promotion_id: @promotion.id, user_id: @order_list.user_id)
+        PromotionUsage.create(promotion_id: @promotion.id, user_id: @order_list.user_id, discount: @result[:discount])
     end
 end
